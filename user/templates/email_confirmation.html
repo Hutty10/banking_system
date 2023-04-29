@@ -1,0 +1,22 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Confirm Your Email Address</title>
+  </head>
+  <body>
+    <h2>Hello {{ first_name }},</h2>
+    <p>
+      Welcome to Homemix! Please confirm your email address by clicking on the
+      following link:
+    </p>
+    <a href="http://{{ domain }}{% url 'email_verify' uidb64=uid token=token %}"
+      >Confirm Email</a
+    >
+    <p>If you didn't sign up for our site, please ignore this email.</p>
+    <p>Best regards,</p>
+    <p>The Banking Team</p>
+  </body>
+</html>
+{% endautoescape %}
