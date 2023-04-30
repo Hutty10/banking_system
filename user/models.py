@@ -3,9 +3,10 @@ import uuid
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from rest_framework_simplejwt.tokens import RefreshToken
 
+from user.choices import Gender, Title
 from user.managers import UserManager
-from user.choices import Title, Gender
 
 # Create your models here.
 
@@ -46,3 +47,10 @@ class User(PermissionsMixin, AbstractBaseUser):
         if self.middle_name:
             return f"{self.title} {self.first_name} {self.middle_name} {self.last_name}"
         return f"{self.title} {self.first_name} {self.last_name}"
+
+    def __str__(self) -> str:
+        return self.fullname
+
+    def tokens(self) -> dict:
+        tokens = RefreshToken.for_user(self)
+        return {"refresh": str(tokens), "access": str(tokens.access_token)}

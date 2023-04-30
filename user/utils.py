@@ -1,7 +1,9 @@
 import threading
 
+from decouple import config
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import EmailMessage
+from django.http import HttpResponsePermanentRedirect
 from six import text_type
 
 from config.settings import DEFAULT_FROM_EMAIL
@@ -34,3 +36,7 @@ class Utils:
             to=[data["to_email"]],
         )
         EmailThread(email).start()
+
+
+class CustomRedirect(HttpResponsePermanentRedirect):
+    allowed_schemes = [config("APP_SCHEME"), "http", "https"]
