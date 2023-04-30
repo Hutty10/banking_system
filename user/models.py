@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.choices import Gender, Title
+from user.constants import Gender, Title
 from user.managers import UserManager
 
 # Create your models here.
@@ -54,3 +54,17 @@ class User(PermissionsMixin, AbstractBaseUser):
     def tokens(self) -> dict:
         tokens = RefreshToken.for_user(self)
         return {"refresh": str(tokens), "access": str(tokens.access_token)}
+
+class UserAddress(models.Model):
+    user = models.OneToOneField(
+        User,
+        related_name='address',
+        on_delete=models.CASCADE,
+    )
+    street_address = models.CharField(max_length=512)
+    city = models.CharField(max_length=256)
+    postal_code = models.PositiveIntegerField()
+    country = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.user.email

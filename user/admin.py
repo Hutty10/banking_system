@@ -1,6 +1,10 @@
 from django.contrib import admin
 from user.models import User
 
-# Register your models here.
 
-admin.site.register(User)
+# Register your models here.
+class UserAdmin(admin.ModelAdmin):
+    readonly_fields = ("id",)
+
+
+admin.site.register(User, UserAdmin)

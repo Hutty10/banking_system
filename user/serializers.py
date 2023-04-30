@@ -4,14 +4,21 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework import exceptions, serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-from user.models import User
+from user.models import User, UserAddress
 from user.utils import activation_token
+
+
+class UserAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAddress
+        fields = ["street_address", "city", "postal_code", "country"]
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=68, min_length=8, write_only=True, required=True
     )
+    address = UserAddressSerializer()
 
     class Meta:
         model = User
@@ -22,6 +29,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "last_name",
             "middle_name",
             "gender",
+            "address",
             "phone",
             "password",
         ]
@@ -134,16 +142,23 @@ class SetNewPasswordSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    address = UserAddressSerializer()
+
     class Meta:
         model = User
         fields = (
             "id",
             "email",
             "fullname",
+            "address",
             "is_active",
             "is_verified",
             "created_at",
         )
         extra_kwargs = {
             "id": {"read_only": True},
+            "address": {"read_only": True},
+            "is_active": {"read_only": True},
+            "is_verified": {"read_only": True},
+            "created_at": {"read_only": True},
         }
