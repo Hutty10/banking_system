@@ -5,8 +5,9 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.constants import Gender, Title
+from user.constants import TitleChoices
 from user.managers import UserManager
+from user.constants import GenderChoices
 
 # Create your models here.
 
@@ -21,12 +22,14 @@ class User(PermissionsMixin, AbstractBaseUser):
         db_index=True,
     )
     email = models.EmailField(_("Email"), max_length=254, db_index=True, unique=True)
-    title = models.CharField(_("Title"), max_length=7, choices=Title.choices)
+    title = models.CharField(_("Title"), max_length=7, choices=TitleChoices.choices)
     first_name = models.CharField(_("First Name"), max_length=20)
     last_name = models.CharField(_("Last Name"), max_length=20)
     middle_name = models.CharField(_("Middle Name"), max_length=20)
-    gender = models.CharField(_("Gender"), max_length=12, choices=Gender.choices)
+    gender = models.CharField(_("Gender"), max_length=1, choices=GenderChoices.choices)
     phone = models.CharField(_("Phone Number"), max_length=15, blank=True, null=True)
+    birth_date = models.DateField(null=True, blank=True)
+
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -55,10 +58,11 @@ class User(PermissionsMixin, AbstractBaseUser):
         tokens = RefreshToken.for_user(self)
         return {"refresh": str(tokens), "access": str(tokens.access_token)}
 
+
 class UserAddress(models.Model):
     user = models.OneToOneField(
         User,
-        related_name='address',
+        related_name="address",
         on_delete=models.CASCADE,
     )
     street_address = models.CharField(max_length=512)

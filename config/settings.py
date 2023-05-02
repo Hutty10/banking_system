@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "rest_framework",
     # Apps
     "user",
+    "account",
+    "transaction",
 ]
 
 MIDDLEWARE = [
@@ -129,6 +131,9 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "user.User"
+
+# Account settings
+ACCOUNT_NUMBER_START_FROM = "343"
 
 # Email settings
 DEFAULT_FROM_EMAIL = "noreply@banking.com"

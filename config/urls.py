@@ -22,4 +22,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path(f"{url_prefix}users/", include("user.urls", namespace="user")),
     path(f"{url_prefix}accounts/", include("account.urls", namespace="account")),
+    path(
+        f"{url_prefix}transactions/",
+        include("transaction.urls", namespace="transaction"),
+    ),
 ]
