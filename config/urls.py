@@ -27,3 +27,7 @@ urlpatterns = [
         include("transaction.urls", namespace="transaction"),
     ),
 ]
+
+
+admin.site.index_title = "Banking"
+admin.site.site_header = "Banking Admin"

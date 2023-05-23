@@ -18,7 +18,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=68, min_length=8, write_only=True, required=True
     )
-    address = UserAddressSerializer()
+    address = UserAddressSerializer(read_only=True)
 
     class Meta:
         model = User

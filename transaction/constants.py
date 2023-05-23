@@ -6,3 +6,4 @@ class TransactionTypeChoices(TextChoices):
     TRANSFER = "transfer", _("transfer")
     WITHDRAW = "withdraw", _("withdraw")
     DEPOSIT = "deposit", _("deposit")
+    INTEREST = "INTEREST", _("INTEREST")

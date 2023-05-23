@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import datetime
 from pathlib import Path
 from decouple import config
 
@@ -132,8 +133,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "user.User"
 
-# Account settings
-ACCOUNT_NUMBER_START_FROM = "343"
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "NON_FIELD_ERRORS_KEY": "error",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # "rest_framework.authentication.BasicAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+}
+
 
 # Email settings
 DEFAULT_FROM_EMAIL = "noreply@banking.com"
@@ -145,3 +161,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_PORT = 465
 # EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 # EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+# Account settings
+ACCOUNT_NUMBER_START_FROM = "343"
+MINIMUM_DEPOSIT_AMOUNT = 100
+MINIMUM_WITHDRAWAL_AMOUNT = 50

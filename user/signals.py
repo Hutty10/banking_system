@@ -7,6 +7,8 @@ from django.utils.http import urlsafe_base64_encode
 
 from user.models import User
 from user.utils import Utils, activation_token
+from account.models import Account
+from account.constants import AccountTypeChoices
 
 
 @receiver(post_save, sender=User, dispatch_uid="confirm_email")
@@ -29,3 +31,5 @@ def send_confiremation_email(sender, instance, created, *args, **kwargs) -> None
             Utils.send_email(data)
         except Exception as e:
             print(f"error sending confirmation: {e}")
+    # if instance.is_verified:
+    #     Account.objects.create(account_type="savings")

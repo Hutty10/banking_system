@@ -22,11 +22,26 @@ class User(PermissionsMixin, AbstractBaseUser):
         db_index=True,
     )
     email = models.EmailField(_("Email"), max_length=254, db_index=True, unique=True)
-    title = models.CharField(_("Title"), max_length=7, choices=TitleChoices.choices)
+    title = models.CharField(
+        _("Title"),
+        max_length=7,
+        choices=TitleChoices.choices,
+        default=TitleChoices.__empty__,
+    )
     first_name = models.CharField(_("First Name"), max_length=20)
     last_name = models.CharField(_("Last Name"), max_length=20)
-    middle_name = models.CharField(_("Middle Name"), max_length=20)
-    gender = models.CharField(_("Gender"), max_length=1, choices=GenderChoices.choices)
+    middle_name = models.CharField(
+        _("Middle Name"),
+        max_length=20,
+        blank=True,
+        # null=True,
+    )
+    gender = models.CharField(
+        _("Gender"),
+        max_length=1,
+        choices=GenderChoices.choices,
+        default=GenderChoices.__empty__,
+    )
     phone = models.CharField(_("Phone Number"), max_length=15, blank=True, null=True)
     birth_date = models.DateField(null=True, blank=True)
 

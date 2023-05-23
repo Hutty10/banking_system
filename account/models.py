@@ -54,18 +54,31 @@ class AccountType(models.Model):
 
 
 class Account(models.Model):
-    user = models.OneToOneField(
+    # account_no = Utils.generate_account_no()
+    owner = models.ForeignKey(
         User,
         related_name="account",
         on_delete=models.CASCADE,
     )
     account_type = models.ForeignKey(
-        AccountType, related_name="accounts", on_delete=models.CASCADE
+        AccountType,
+        related_name="accounts",
+        on_delete=models.DO_NOTHING,
+        # null=True,
+        # default=1,
     )
     account_no = models.CharField(
-        unique=True, blank=True, max_length=10, editable=False
+        unique=True,
+        blank=True,
+        db_index=True,
+        max_length=10,
+        editable=False,
     )
-    balance = models.DecimalField(default=0, max_digits=12, decimal_places=2)
+    balance = models.DecimalField(
+        default=0,
+        max_digits=12,
+        decimal_places=2,
+    )
     interest_start_date = models.DateField(
         null=True,
         blank=True,
