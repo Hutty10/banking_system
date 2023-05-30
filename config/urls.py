@@ -31,3 +31,7 @@ urlpatterns = [
 
 admin.site.index_title = "Banking"
 admin.site.site_header = "Banking Admin"
+
+
+handler404 = "utils.views.error_404"
+handler500 = "utils.views.error_500"

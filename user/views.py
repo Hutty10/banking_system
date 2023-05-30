@@ -30,7 +30,14 @@ class RegisterView(APIView):
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        response = {
+            "message": "User created successful",
+            "data": serializer.data,
+            "status": True,
+            "status_code": status.HTTP_201_CREATED,
+        }
+        return Response(response, status=status.HTTP_201_CREATED)
 
 
 class VerifyEmailView(APIView):
@@ -46,13 +53,22 @@ class VerifyEmailView(APIView):
             user.is_active = True
             user.is_verified = True
             user.save()
-            return Response(
-                {"message": "Email confirmation successful"},
-                status=status.HTTP_202_ACCEPTED,
-            )
+            response = {
+                "message": "Email confirmation successful",
+                "data": {},
+                "status": True,
+                "status_code": status.HTTP_202_ACCEPTED,
+            }
+            return Response(response, status=status.HTTP_202_ACCEPTED)
 
+        response = {
+            "message": "Invalid token",
+            "data": {},
+            "status": False,
+            "status_code": status.HTTP_400_BAD_REQUEST,
+        }
         return Response(
-            {"error": "Invalid token"},
+            response,
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -65,7 +81,13 @@ class LoginView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response = {
+            "message": "Login successful",
+            "data": serializer.data,
+            "status": True,
+            "status_code": status.HTTP_200_OK,
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class RequestPasswordResetView(APIView):
@@ -95,8 +117,14 @@ class RequestPasswordResetView(APIView):
                 "email_subject": "Reset your passsword",
             }
             Utils.send_email(data)
+        response = {
+            "message": "We have sent you a link to reset your password",
+            "data": {},
+            "status": True,
+            "status_code": status.HTTP_200_OK,
+        }
         return Response(
-            {"success": "We have sent you a link to reset your password"},
+            response,
             status=status.HTTP_200_OK,
         )
 
@@ -128,8 +156,14 @@ class PasswordTokenCheckView(APIView):
                     return CustomRedirect(redirect_url + "?token_valid=False")
 
             except UnboundLocalError as e:
+                response = {
+                    "message": "Token is not valid, please request a new one",
+                    "data": {},
+                    "status": False,
+                    "status_code": status.HTTP_400_BAD_REQUEST,
+                }
                 return Response(
-                    {"error": "Token is not valid, please request a new one"},
+                    response,
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -140,8 +174,14 @@ class SetNewPasswordView(APIView):
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        response = {
+            "message": "Password reset success",
+            "data": {},
+            "status": True,
+            "status_code": status.HTTP_200_OK,
+        }
         return Response(
-            {"success": True, "message": "Password reset success"},
+            response,
             status=status.HTTP_200_OK,
         )
 

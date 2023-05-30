@@ -1,10 +1,11 @@
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
-from django.utils import timezone
 from django.db import transaction
+from django.utils import timezone
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
 
 from account.models import Account
 from transaction.constants import TransactionTypeChoices
@@ -50,10 +51,17 @@ class DepositMoneyView(TransactionCreateMixin):
         serializer.save(
             account=account, transaction_type=TransactionTypeChoices.DEPOSIT
         )
-
-        return Response(
-            {"message": f"{amount} was deposited to {account.account_no} successfully"}
-        )
+        response = {
+            "message": "DEPOSIT successful",
+            "data": {
+                "account": account.account_no,
+                "amount": Decimal(serializer.data.get("amount")),
+                "balance": account.balance,
+            },
+            "status": True,
+            "status_code": HTTP_200_OK,
+        }
+        return Response(response, status=HTTP_200_OK)
 
 
 class WithdrawMoneyView(TransactionCreateMixin):
@@ -75,16 +83,29 @@ class WithdrawMoneyView(TransactionCreateMixin):
         serializer.save(
             account=account, transaction_type=TransactionTypeChoices.WITHDRAW
         )
-        return Response(
-            {"message": f"{amount} was withdraw from {account.account_no} successfully"}
-        )
+        response = {
+            "message": "WITHDRAW successful",
+            "data": {
+                "account": account.account_no,
+                "amount": Decimal(serializer.data.get("amount")),
+                "balance": account.balance,
+            },
+            "status": True,
+            "status_code": HTTP_200_OK,
+        }
+        return Response(response, status=HTTP_200_OK)
 
 
 class TransferMoneyView(TransactionCreateMixin):
     def post(self, request, *args, **kwargs):
         data = request.data
         serializer = self.serializer_class(
-            data=data, context={"transaction_type": TransactionTypeChoices.TRANSFER}
+            data=data,
+            context={
+                "transaction_type": TransactionTypeChoices.TRANSFER,
+                "account": data.get("account"),
+                "receiver_account": data.get("receiver_account"),
+            },
         )
         serializer.is_valid(raise_exception=True)
         amount = Decimal(data.get("amount"))
@@ -121,6 +142,15 @@ class TransferMoneyView(TransactionCreateMixin):
             receiver_account=receiver_account,
             transaction_type=TransactionTypeChoices.TRANSFER,
         )
-        return Response(
-            {"msg": f"transfered {amount} from {source_account} to {receiver_account}"}
-        )
+        response = {
+            "message": "TRANSFER successful",
+            "data": {
+                "sender": source_account.account_no,
+                "receiver": receiver_account.account_no,
+                "amount": Decimal(serializer.data.get("amount")),
+                "balance": source_account.balance,
+            },
+            "status": True,
+            "status_code": HTTP_200_OK,
+        }
+        return Response(response, status=HTTP_200_OK)

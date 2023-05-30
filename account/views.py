@@ -30,7 +30,13 @@ class AccountCreateView(generics.CreateAPIView):
             else:
                 account_no = Utils.generate_account_no()
         serializer.save(owner=request.user, account_no=account_no)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        response = {
+            "message": "account created successful",
+            "data": serializer.data,
+            "status": True,
+            "status_code": status.HTTP_201_CREATED,
+        }
+        return Response(response, status=status.HTTP_201_CREATED)
 
 
 class AccountDetailView(generics.RetrieveDestroyAPIView):
@@ -38,3 +44,25 @@ class AccountDetailView(generics.RetrieveDestroyAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
     permission_classes = [IsOwnerOrAdmin]
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        response = {
+            "message": "details successful",
+            "data": serializer.data,
+            "status": True,
+            "status_code": status.HTTP_200_OK,
+        }
+        return Response(response, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        response = {
+            "message": "Delete successful",
+            "data": {},
+            "status": True,
+            "status_code": status.HTTP_204_NO_CONTENT,
+        }
+        return Response(response, status=status.HTTP_204_NO_CONTENT)

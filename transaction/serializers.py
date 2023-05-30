@@ -77,6 +77,23 @@ class TransactionSerializer(serializers.ModelSerializer):
                     f"Insufficient Fund\nYou have {balance}  in your account. "
                 )
 
+        if is_transfer:
+            if not context.get("receiver_account"):
+                raise serializers.ValidationError("receiver_account field required")
+            account = context.get("account")
+            account = Account.objects.get(account_no=account)
+            balance = account.balance
+            min_transfer_amount = settings.MINIMUM_TRANSFER_AMOUNT
+
+            if amount > balance:
+                raise serializers.ValidationError(
+                    f"Insufficient Fund\nYou have {balance}  in your account. "
+                )
+            if amount < min_transfer_amount:
+                raise serializers.ValidationError(
+                    f"You can transfer at least {min_transfer_amount} "
+                )
+
         return super().validate(attrs)
 
     def create(self, validated_data):

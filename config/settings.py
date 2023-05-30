@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -55,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "utils.execption_handler.ExceptionMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -134,11 +135,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "user.User"
 
 
-
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "NON_FIELD_ERRORS_KEY": "error",
+    "EXCEPTION_HANDLER": "utils.execption_handler.handle_exception",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         # "rest_framework.authentication.BasicAuthentication",
@@ -165,3 +166,4 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 ACCOUNT_NUMBER_START_FROM = "343"
 MINIMUM_DEPOSIT_AMOUNT = 100
 MINIMUM_WITHDRAWAL_AMOUNT = 50
+MINIMUM_TRANSFER_AMOUNT = 20
