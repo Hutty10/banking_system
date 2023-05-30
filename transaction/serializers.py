@@ -56,43 +56,49 @@ class TransactionSerializer(serializers.ModelSerializer):
                 f"You need to deposit at least {settings.MINIMUM_DEPOSIT_AMOUNT} "
             )
         if is_withdraw:
-            account = context.get("account")
-            print(f"acc--{account}")
-            account = Account.objects.get(account_no=account)
-            balance = account.balance
-            min_withdraw_amount = settings.MINIMUM_WITHDRAWAL_AMOUNT
-            max_withdraw_amount = account.account_type.maximum_withdrawal_amount
-            if amount < min_withdraw_amount:
-                raise serializers.ValidationError(
-                    f"You can withdraw at least {min_withdraw_amount} "
-                )
+            try:
+                account = context.get("account")
+                print(f"acc--{account}")
+                account = Account.objects.get(account_no=account)
+                balance = account.balance
+                min_withdraw_amount = settings.MINIMUM_WITHDRAWAL_AMOUNT
+                max_withdraw_amount = account.account_type.maximum_withdrawal_amount
+                if amount < min_withdraw_amount:
+                    raise serializers.ValidationError(
+                        f"You can withdraw at least {min_withdraw_amount} "
+                    )
 
-            if amount > max_withdraw_amount:
-                raise serializers.ValidationError(
-                    f"You can withdraw at most {max_withdraw_amount} "
-                )
+                if amount > max_withdraw_amount:
+                    raise serializers.ValidationError(
+                        f"You can withdraw at most {max_withdraw_amount} "
+                    )
 
-            if amount > balance:
-                raise serializers.ValidationError(
-                    f"Insufficient Fund\nYou have {balance}  in your account. "
-                )
+                if amount > balance:
+                    raise serializers.ValidationError(
+                        f"Insufficient Fund\nYou have {balance}  in your account. "
+                    )
+            except Account.DoesNotExist:
+                raise serializers.ValidationError("account does not exit")
 
         if is_transfer:
             if not context.get("receiver_account"):
                 raise serializers.ValidationError("receiver_account field required")
-            account = context.get("account")
-            account = Account.objects.get(account_no=account)
-            balance = account.balance
-            min_transfer_amount = settings.MINIMUM_TRANSFER_AMOUNT
+            try:
+                account = context.get("account")
+                account = Account.objects.get(account_no=account)
+                balance = account.balance
+                min_transfer_amount = settings.MINIMUM_TRANSFER_AMOUNT
 
-            if amount > balance:
-                raise serializers.ValidationError(
-                    f"Insufficient Fund\nYou have {balance}  in your account. "
-                )
-            if amount < min_transfer_amount:
-                raise serializers.ValidationError(
-                    f"You can transfer at least {min_transfer_amount} "
-                )
+                if amount > balance:
+                    raise serializers.ValidationError(
+                        f"Insufficient Fund\nYou have {balance}  in your account. "
+                    )
+                if amount < min_transfer_amount:
+                    raise serializers.ValidationError(
+                        f"You can transfer at least {min_transfer_amount} "
+                    )
+            except Account.DoesNotExist:
+                raise serializers.ValidationError("account does not exit")
 
         return super().validate(attrs)
 
