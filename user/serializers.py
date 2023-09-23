@@ -67,7 +67,7 @@ class VerifyEmailSerializer(serializers.ModelSerializer):
         fields = ["token", "uidb64"]
 
 
-class LoginSerializer(serializers.Serializer):
+class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=254, write_only=True)
     password = serializers.CharField(max_length=68, min_length=8, write_only=True)
     tokens = serializers.SerializerMethodField()

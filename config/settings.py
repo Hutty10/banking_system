@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third party packages
     "rest_framework",
+    "drf_yasg",
     # Apps
     "user",
     "account",
@@ -167,3 +168,14 @@ ACCOUNT_NUMBER_START_FROM = "343"
 MINIMUM_DEPOSIT_AMOUNT = 100
 MINIMUM_WITHDRAWAL_AMOUNT = 50
 MINIMUM_TRANSFER_AMOUNT = 20
+
+# DOCUMENTATION
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "JWT Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
+    }
+}
