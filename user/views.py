@@ -7,6 +7,9 @@ from rest_framework import status, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+
 
 from user.models import User
 from user.serializers import (
@@ -25,6 +28,10 @@ class RegisterView(APIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
+    @swagger_auto_schema(
+        operation_summary="Register a new user",
+        request_body=RegisterSerializer,
+    )
     def post(self, request) -> Response:
         data = request.data
         serializer = self.serializer_class(data=data)
@@ -77,6 +84,10 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
+    @swagger_auto_schema(
+        operation_summary="Login an existing user",
+        request_body=LoginSerializer,
+    )
     def post(self, request) -> Response:
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -94,6 +105,10 @@ class RequestPasswordResetView(APIView):
     permission_classes = [AllowAny]
     serializer_class = RequestPasswordResetSerializer
 
+    @swagger_auto_schema(
+        operation_summary="Request password reset",
+        request_body=RequestPasswordResetSerializer,
+    )
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         email = request.data.get("email", "")
@@ -171,6 +186,10 @@ class PasswordTokenCheckView(APIView):
 class SetNewPasswordView(APIView):
     serializer_class = SetNewPasswordSerializer
 
+    @swagger_auto_schema(
+        operation_summary="Change user password",
+        request_body=SetNewPasswordSerializer,
+    )
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
