@@ -32,7 +32,7 @@ class RegisterView(APIView):
         serializer.save()
 
         response = {
-            "message": "User created successful",
+            "message": "User created successful check your email to activate account",
             "data": serializer.data,
             "status": True,
             "status_code": status.HTTP_201_CREATED,
