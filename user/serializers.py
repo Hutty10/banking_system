@@ -18,7 +18,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=68, min_length=8, write_only=True, required=True
     )
-    address = UserAddressSerializer(read_only=True)
+    # address = UserAddressSerializer(read_only=True)
 
     class Meta:
         model = User
@@ -29,7 +29,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "last_name",
             "middle_name",
             "gender",
-            "address",
+            # "address",
             "phone",
             "password",
         ]
@@ -38,6 +38,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "is_verified": {"read_only": True},
             "password": {"write_only": True},
             "user_permissions": {"read_only": True},
+            "address": {"read_only": True},
         }
 
     def validate(self, attrs):
