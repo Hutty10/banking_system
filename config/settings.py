@@ -164,10 +164,11 @@ SIMPLE_JWT = {
 
 # Email settings
 DEFAULT_FROM_EMAIL = "noreply@banking.com"
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
 EMAIL_HOST = config("EMAIL_HOST")
 EMAIL_PORT = 465
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")

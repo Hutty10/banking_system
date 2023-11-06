@@ -1,12 +1,13 @@
 import threading
 
 from decouple import config
+from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, get_connection
 from django.http import HttpResponsePermanentRedirect
 from six import text_type
 
-from config.settings import DEFAULT_FROM_EMAIL
+# from config.settings import DEFAULT_FROM_EMAIL
 
 
 class EmailThread(threading.Thread):
@@ -29,12 +30,22 @@ activation_token = AccountActivationTokenGenerator()
 class Utils:
     @staticmethod
     def send_email(data) -> None:
-        email = EmailMessage(
-            subject=data["email_subject"],
-            body=data["email_body"],
-            from_email=DEFAULT_FROM_EMAIL,
-            to=[data["to_email"]],
-        )
+        with get_connection(
+            host=settings.EMAIL_HOST,
+            port=settings.EMAIL_PORT,
+            username=settings.EMAIL_HOST_USER,
+            password=settings.EMAIL_HOST_PASSWORD,
+            use_tls=settings.EMAIL_USE_TLS,
+            use_ssl=settings.EMAIL_USE_SSL,
+        ) as connection:
+            email = EmailMessage(
+                subject=data["email_subject"],
+                body=data["email_body"],
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[data["to_email"]],
+                connection=connection,
+            )
+            email.content_subtype = "html"
         EmailThread(email).start()
 
 
